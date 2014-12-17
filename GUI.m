@@ -78,7 +78,31 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.listbox1, 'String', 'lalalal');
+%videoSrc = vision.VideoFileReader('Trainingsvideo.avi', 'ImageColorSpace', 'Intensity');
+[name, path] = uigetfile('*.avi');
+vid = VideoReader(name);
+frame = readFrame(vid);
+axes(handles.axes3);
+image(frame)
+
+
+
+% nFrames = vid.NumberOfFrames;
+% vidHeight = vid.Height;
+% vidWidth = vid.Width;
+% mov(1:nFrames) = ...
+% struct('cdata',zeros(vidHeight,vidWidth, 3,'uint8'),...
+%            'colormap',[]);
+% hf = handles.axes1;
+% for k = 1 : nFrames
+%     mov(k).cdata = read(vid,k);
+%     
+% end
+% 
+% %set(hf, 'position', [150 150 vidWidth vidHeight])
+% movie(hf, mov, 1, vid.FrameRate);
+
+
 
 
 % --- Executes on selection change in listbox1.
