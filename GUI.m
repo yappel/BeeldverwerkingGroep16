@@ -84,6 +84,8 @@ vid = VideoReader(name);
 frame = readFrame(vid);
 axes(handles.axes3);
 image(frame)
+handles.vid=vid;
+guidata(hObject,handles);
 
 
 
@@ -133,3 +135,8 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+while(hasFrame(handles.vid))
+data = readFrame(handles.vid);
+h = get(handles.axes3,'Children');
+set(h,'CData', data);
+end
