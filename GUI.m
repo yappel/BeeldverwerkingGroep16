@@ -137,6 +137,15 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 while(hasFrame(handles.vid))
 data = readFrame(handles.vid);
+upperbound = data(:,:,2) <= data(:,:,1) + 25;
+lowerbound = data(:,:,2) >= 0.9 .* data(:,:,1) - 40;
+mask = (upperbound ~= lowerbound);
+data2(:,:,1) = uint8(mask) .* data(:,:,1);
+data2(:,:,2) = uint8(mask) .* data(:,:,2);
+data2(:,:,3) = uint8(mask) .* data(:,:,3);
 h = get(handles.axes3,'Children');
-set(h,'CData', data);
+set(h,'CData', data2);
+%pause(1/handles.vid.FrameRate)
 end
+
+
