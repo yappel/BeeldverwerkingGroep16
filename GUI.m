@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 17-Dec-2014 09:51:30
+% Last Modified by GUIDE v2.5 17-Dec-2014 12:24:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,7 +78,6 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%videoSrc = vision.VideoFileReader('Trainingsvideo.avi', 'ImageColorSpace', 'Intensity');
 [name, path] = uigetfile('*.avi');
 vid = VideoReader(name);
 frame = readFrame(vid);
@@ -86,23 +85,6 @@ axes(handles.axes3);
 image(frame)
 handles.vid=vid;
 guidata(hObject,handles);
-
-
-
-% nFrames = vid.NumberOfFrames;
-% vidHeight = vid.Height;
-% vidWidth = vid.Width;
-% mov(1:nFrames) = ...
-% struct('cdata',zeros(vidHeight,vidWidth, 3,'uint8'),...
-%            'colormap',[]);
-% hf = handles.axes1;
-% for k = 1 : nFrames
-%     mov(k).cdata = read(vid,k);
-%     
-% end
-% 
-% %set(hf, 'position', [150 150 vidWidth vidHeight])
-% movie(hf, mov, 1, vid.FrameRate);
 
 
 
@@ -140,3 +122,12 @@ data = readFrame(handles.vid);
 h = get(handles.axes3,'Children');
 set(h,'CData', data);
 end
+
+function getPlate(frame)
+
+
+% --- Executes on mouse press over axes background.
+function axes3_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to axes3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
