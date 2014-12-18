@@ -84,6 +84,7 @@ vid = VideoReader(name);
 frame = readFrame(vid);
 axes(handles.axes3);
 image(frame)
+set(handles.text2, 'String', vid.CurrentTime); 
 handles.vid=vid;
 guidata(hObject,handles);
 
@@ -143,9 +144,9 @@ mask = (upperbound ~= lowerbound);
 data2(:,:,1) = uint8(mask) .* data(:,:,1);
 data2(:,:,2) = uint8(mask) .* data(:,:,2);
 data2(:,:,3) = uint8(mask) .* data(:,:,3);
+SE = strel('diamond',5);
 h = get(handles.axes3,'Children');
 set(h,'CData', data2);
+set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
 %pause(1/handles.vid.FrameRate)
 end
-
-
