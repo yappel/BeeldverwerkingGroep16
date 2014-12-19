@@ -34,8 +34,8 @@ title('red vs green');
 x = 1:255;
 y = 0.9*x + 22;
 y2 = 0.9*x -70;
-scatter(x,y,'.');
-scatter(x,y2,'.');
+%scatter(x,y,'.');
+%scatter(x,y2,'.');
 
 
     figure(2)
