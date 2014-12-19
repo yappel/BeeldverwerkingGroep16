@@ -139,7 +139,6 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 while(hasFrame(handles.vid))
 data = readFrame(handles.vid);
 data2 = thresholdFilter(data);
-SE = strel('diamond',5);
 h = get(handles.axes3,'Children');
 set(h,'CData', data2);
 set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
