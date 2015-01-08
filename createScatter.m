@@ -26,16 +26,11 @@ end
 for i = 1:length
     R = red{i};
     G = green{i};
-    scatter(R(:),G(:),'filled');
+    scatter(R(:),G(:), 'filled');
 end
 xlabel('red');
 ylabel('green');
 title('red vs green');
-x = 1:255;
-y = 0.9*x + 22;
-y2 = 0.9*x -70;
-%scatter(x,y,'.');
-%scatter(x,y2,'.');
 
 
     figure(2)
