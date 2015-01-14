@@ -1,5 +1,5 @@
 method = 2;
-
+listSize = 0;
 if (method == 1)
     filelist = dir('resources/KentekenSamples/*.png');
     list = cell(1,length(filelist));
@@ -24,6 +24,6 @@ if (method == 2)
      end
      
     createScatter2(listFOR, listBACK);
-     
+    
      
 end
