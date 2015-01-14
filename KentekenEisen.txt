@@ -1,0 +1,12 @@
+Regels voor de nummerborden:
+
+Blacklist letters: A E U I O Q C Y(alleen bij 3 letterige nummerborden)
+Blacklist combinaties: GVD KKK NSB PKK PSV TBS SS SD (SP DPK GL PVV VVD SGP) 
+
+Soorten combinaties mogelijk (X = letter, 9 = cijfer)
+X-999-XX
+XX-999-X
+9-XXX-99
+99-XXX-9
+99-xx-xx
+xx-xx-99 
