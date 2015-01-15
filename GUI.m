@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 17-Dec-2014 09:51:30
+% Last Modified by GUIDE v2.5 15-Jan-2015 10:12:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -73,17 +73,20 @@ function varargout = GUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
+% --- Executes on button press in buttonload.
+function buttonload_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonload (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %videoSrc = vision.VideoFileReader('Trainingsvideo.avi', 'ImageColorSpace', 'Intensity');
 [name, path] = uigetfile('*.avi');
 vid = VideoReader(name);
 frame = readFrame(vid);
-axes(handles.axes3);
+axes(handles.framevideo);
 image(frame)
+data2 = thresholdFilter(frame);
+axes(handles.frametresholded);
+image(data2)
 set(handles.text2, 'String', vid.CurrentTime); 
 handles.vid=vid;
 guidata(hObject,handles);
@@ -131,16 +134,61 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
+% --- Executes on button press in buttonplay.
+function buttonplay_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonplay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-while(hasFrame(handles.vid))
-data = readFrame(handles.vid);
-data2 = thresholdFilter(data);
-h = get(handles.axes3,'Children');
-set(h,'CData', data2);
-set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
-%pause(1/handles.vid.FrameRate)
-end
+uiresume(handles.figure1)
+
+% while(hasFrame(handles.vid))
+% data = readFrame(handles.vid);
+% data2 = thresholdFilter(data);
+% h = get(handles.framevideo,'Children');
+% set(h,'CData', data);
+% h2 = get(handles.frametresholded,'Children');
+% set(h2,'CData', data2);
+% set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
+% %pause(1/handles.vid.FrameRate)
+% end
+
+
+
+% --- Executes on button press in buttonloadtest.
+function buttonloadtest_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonloadtest (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[FileName,PathName,FilterIndex] = uigetfile('*.png','MultiSelect','on');
+%     axes(handles.frameplate);
+%     imshow(imread([PathName, FileName{1}]))
+    for K = 1:length(FileName)
+        h = get(handles.frameplate,'Children');
+        axes(handles.frameplate);
+%         set(h,'CData', imread([PathName, FileName{K}]));
+        plate = imread([PathName, FileName{K}]);
+        imshow(plate)
+        chars = CharSegmentation(plate);
+        axes(handles.framechar1)
+        showchar(chars, 1, handles.char1);
+        axes(handles.framechar2)
+        showchar(chars, 2, handles.char2);
+        axes(handles.framechar3)
+        showchar(chars, 3, handles.char3);
+        axes(handles.framechar4)
+        showchar(chars, 4, handles.char4);
+        axes(handles.framechar5)
+        showchar(chars, 5, handles.char5);
+        axes(handles.framechar6)
+        showchar(chars, 6, handles.char6);
+  
+        
+        uiwait(handles.figure1);
+    end
+
+    
+    function showchar(chars, i, h)
+        imshow(chars{i});
+        result = PatternRec(chars{i});
+        set(h,'String',char(result));
+

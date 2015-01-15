@@ -17,10 +17,10 @@ if (method == 2)
         listFOR{K} = imread(['resources/TrainingsIMGs/Foreground2/', filelistFOR(K).name]);
      end
      
-    filelistBACK = dir('resources/TrainingsIMGs/Background/*.png');
+    filelistBACK = dir('resources/TrainingsIMGs/Background2/*.png');
     listBACK = cell(1,length(filelistBACK));
      for K = 1:length(filelistBACK)
-        listBACK{K} = imread(['resources/TrainingsIMGs/Background/', filelistBACK(K).name]);
+        listBACK{K} = imread(['resources/TrainingsIMGs/Background2/', filelistBACK(K).name]);
      end
      
     createScatter2(listFOR, listBACK);

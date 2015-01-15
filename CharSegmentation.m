@@ -2,8 +2,8 @@ function [ charlist ] = CharSegmentation( inputImage )
 %CHARSEGMENTATION segmentates 6 characters out of the input image
 %   Detailed explanation goes here
 
-figure(100)
-image(inputImage)
+% figure(100)
+% image(inputImage)
 
 %Create the list containing the images of the characters
 charlist = cell(1,6);
@@ -37,8 +37,8 @@ sortedIndexesSorted = sort(sortedIndexes(1:6), 'ascend');
 %Get the 6 images of the characters and put them into the list
 for i = 1:6
     charlist{i} = prop(sortedIndexesSorted(i)).Image;
-     figure(i)
-     image(imresize(charlist{i},[75,75]))
+%      figure(i)
+%      image(imresize(charlist{i},[75,75]))
 %      result = PatternRec(charlist{i});
 %      name = result.name(1);
 %      title(name);
