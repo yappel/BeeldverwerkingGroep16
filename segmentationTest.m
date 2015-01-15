@@ -15,6 +15,7 @@ filelist = dir('resources/Trainingsset/Categorie I/*.avi');
 for K = 1:length(filelist)
   vid = VideoReader(['resources/Trainingsset/Categorie I/', filelist(K).name]);
   frame = readFrame(vid);
+  fprintf(1,[num2str(K) ': \n']);
   frame2 = thresholdFilter(frame);
   %frame2 = rotation(frame);
   pause
