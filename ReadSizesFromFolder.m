@@ -10,3 +10,4 @@ for ii=1:nfiles
 end
 
 meanRatio = mean(cell2mat(sizes))
+maxRatio = max(cell2mat(sizes))
