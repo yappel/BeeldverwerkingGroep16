@@ -1,0 +1,12 @@
+Voor de karakterherkenning maken we gebruik van pattern recognition.
+Op internet hebben we opgezocht welk lettertype de Nederlandse nummerborden gebruiken en hebben hiermee samples gemaakt.
+Bepaalde letters komen nooit voor, dus deze letters staan ook niet tussen onze samples.
+Wanneer er een karakter is gesegmenteerd uit een nummerbord, passen we de grootte aan zodat deze precies 75 bij 75 is, net zo groot als onze samples.
+De 75 bij 75 matrix verdelen we vervolgens in 25 vierkante delen van gelijke grootte. Ditzelfde doen we voor elke sample en vervolgens tellen
+we het aantal pixels in elk vierkant. Voor elk vierkant nemen we het verschil met het aantal pixels in het corrensponderende vierkant in elk sample.
+Deze verschillen kwadrateren we en dan tellen we al deze 25 waardes bij elkaar op. Hierdoor heb we voor elke sample een getal die aangeeft hoeveel ons gesegmenteerde karakter van dit sample afwijkt.
+De sample die het minste afwijkt van het gesegmenteerde karakter wordt gebruikt om vast te stellen wat het karakter is.
+
+Uit testen met nummerborden die we zelf hebben gesegmenteerd, blijkt deze techniek zeer effectief te zijn en slecht een enkele karakters worden fout herkend.
+Een voorbeeld van een van de weinige fouten is (------> VUL PLAATS HIER IN <------) te zien. 
+Het plaatje (------> VUL PLAATS HIER IN <------) laat goed zien dat de karakters goed worden herkend ondanks de lage kwaliteit van de gesegmenteerde letters.

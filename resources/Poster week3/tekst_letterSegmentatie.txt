@@ -1,0 +1,5 @@
+Deze week zijn we begonnen aan de segmentatie van de karakters uit het gesegmenteerde nummerbord. 
+Dit doen we door de rgb afbeelding om te zetten naar een grijswaardenplaatje en daarop een treshhold uit te voeren.
+Een normaal nederlands nummerbord bestaat altijd 6 karakters dus in het binaire plaatje labelen we alle objecten en selecteren de 6 grootste objecten.
+Echter, wanneer er een een donkere rand om het gesegmenteerde nummerbord zit, werkt deze techniek nog niet perfect. Dit is omdat de rand om het nummerbord zelf een object wordt die bij de grootse 6 behoort. 
+Dit probleem redelijk gemakkelijk op te lossen, maar daar zijn we deze week nog niet aan toe gekomen en is dus een opdracht voor komende week.
