@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 15-Jan-2015 10:12:55
+% Last Modified by GUIDE v2.5 16-Jan-2015 14:04:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -130,7 +130,7 @@ function listbox1_CreateFcn(hObject, eventdata, handles)
 % Hint: listbox controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','gray');
 end
 
 
@@ -139,18 +139,18 @@ function buttonplay_Callback(hObject, eventdata, handles)
 % hObject    handle to buttonplay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-uiresume(handles.figure1)
 
-% while(hasFrame(handles.vid))
-% data = readFrame(handles.vid);
-% data2 = thresholdFilter(data);
-% h = get(handles.framevideo,'Children');
-% set(h,'CData', data);
-% h2 = get(handles.frametresholded,'Children');
-% set(h2,'CData', data2);
-% set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
-% %pause(1/handles.vid.FrameRate)
-% end
+
+while(hasFrame(handles.vid))
+data = readFrame(handles.vid);
+data2 = thresholdFilter(data);
+h = get(handles.framevideo,'Children');
+set(h,'CData', data);
+h2 = get(handles.frametresholded,'Children');
+set(h2,'CData', data2);
+set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
+%pause(1/handles.vid.FrameRate)
+end
 
 
 
@@ -192,3 +192,11 @@ function buttonloadtest_Callback(hObject, eventdata, handles)
         result = PatternRec(chars{i});
         set(h,'String',char(result));
 
+
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+uiresume(handles.figure1)
