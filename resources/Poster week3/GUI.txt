@@ -1,0 +1,7 @@
+De gui is aangepast, zodat er nu meer informatie over de tussen stappen wordt weergeven en hij er beter uitziet.
+Er zijn nu 9 gebieden waar plaatjes komen. In het grootste vlak onder de knoppen wordt de video onbewerkt afgespeeld.
+In het vak in de rechterbovenhoek zal in het huidige frame worden aangegeven waar het nummerbord zich bevindt volgens ons programma.
+In het vak daaronder zal het gesegmenteerde nummerbord afgebeeld worden.
+In de 6 vlakken onderin zullen de gesegmenteerde karakters worden afgebeeld, met daaronder het karakter dat daaruit herkend is.
+Aan de rechter kant zal vervolgens een lijst komen te staan met de herkende nummerborden.
+In vergelijking met de vorige versie van de gui zijn er ook nog 2 knoppen bijgekomen, maar deze zijn tijdelijk en worden gebruikt voor testen.

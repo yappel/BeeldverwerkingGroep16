@@ -1,0 +1,9 @@
+Dingen te doen volgende week:
+- Database aanmaken voor het aantal pixels in elk gebied voor elke sample in plaats van het voor elke letter die we moeten herkennen het voor elk sample weer opnieuw uit te rekenen (voor een betere snelheid)
+- Verbeteren van karaktersegmentatie door:
+1. filters op het plaatje toe te passen voordat we het thresholden
+2. de nummerborden als eerste roteren zodat ze allemaal horizontaal staan
+
+- Mochten de karakterherkenning nog niet goed genoeg werken een vergelijking van de exoskeletten toevoegen.
+- Nummerbordsegmentatie afronden door o.a. alle filters en thresholds te finetunen
+- GUI de herkende nummerborden laten weergeven in de tabel rechts.
