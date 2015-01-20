@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 16-Jan-2015 14:04:55
+% Last Modified by GUIDE v2.5 20-Jan-2015 00:19:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -80,6 +80,7 @@ function buttonload_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 %videoSrc = vision.VideoFileReader('Trainingsvideo.avi', 'ImageColorSpace', 'Intensity');
 [name, path] = uigetfile('*.avi');
+set(handles.uitable1,'Data',{})
 vid = VideoReader(name);
 frame = readFrame(vid);
 axes(handles.framevideo);
@@ -159,7 +160,11 @@ function buttonloadtest_Callback(hObject, eventdata, handles)
 % hObject    handle to buttonloadtest (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[FileName,PathName,FilterIndex] = uigetfile('*.png','MultiSelect','on');
+set(handles.uitable1,'Data',{})
+% [FileName,PathName,FilterIndex] = uigetfile('*.png','MultiSelect','on');
+% FileName = {'For_1.png'    'For_2.png'    'For_3.png'    'For_4.png'    'For_5.png'    'For_6.png'    'For_7.png'  'For_8.png'    'For_9.png'    'For_10.png'    'For_11.png'    'For_12.png'    'For_13.png'    'For_14.png' 'For_15.png'    'For_16.png'    'For_17.png'    'For_18.png'    'For_19.png'    'For_20.png'    'For_21.png' 'For_22.png'    'For_23.png'    'For_24.png'    'For_25.png'    'For_26.png'    'For_27.png'    'For_28.png' 'For_29.png'    'For_30.png' };
+FileName = {'For_23.png'};
+PathName = 'C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\TrainingsIMGs\Foreground\';
 %     axes(handles.frameplate);
 %     imshow(imread([PathName, FileName{1}]))
     for K = 1:length(FileName)
@@ -168,29 +173,32 @@ function buttonloadtest_Callback(hObject, eventdata, handles)
 %         set(h,'CData', imread([PathName, FileName{K}]));
         plate = imread([PathName, FileName{K}]);
         imshow(plate)
-        chars = CharSegmentation(plate);
+        [chars, id] = CharSegmentation(plate);
         axes(handles.framechar1)
-        showchar(chars, 1, handles.char1);
+        result{1} = showchar(chars, 1, handles.char1);
         axes(handles.framechar2)
-        showchar(chars, 2, handles.char2);
+        result{2} = showchar(chars, 2, handles.char2);
         axes(handles.framechar3)
-        showchar(chars, 3, handles.char3);
+        result{3} = showchar(chars, 3, handles.char3);
         axes(handles.framechar4)
-        showchar(chars, 4, handles.char4);
+        result{4} = showchar(chars, 4, handles.char4);
         axes(handles.framechar5)
-        showchar(chars, 5, handles.char5);
+        result{5} = showchar(chars, 5, handles.char5);
         axes(handles.framechar6)
-        showchar(chars, 6, handles.char6);
-  
+        result{6} = showchar(chars, 6, handles.char6);
         
-        uiwait(handles.figure1);
+        plate = determinePlate(result, id);
+        oldData = get(handles.uitable1,'Data');
+        newData = [oldData; {plate id 0}];
+        set(handles.uitable1,'Data',newData)
+%         uiwait(handles.figure1);
     end
 
     
-    function showchar(chars, i, h)
+    function result = showchar(chars, i, h)
         imshow(chars{i});
-        result = PatternRec(chars{i});
-        set(h,'String',char(result));
+        result = CharRecogn (chars{i});
+        set(h,'String',char(result(1,1)));
 
 
 

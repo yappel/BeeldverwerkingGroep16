@@ -1,4 +1,4 @@
-function [ charlist ] = CharSegmentation( inputImage )
+function [ charlist, id ] = CharSegmentation( inputImage )
 %CHARSEGMENTATION segmentates 6 characters out of the input image
 %   Detailed explanation goes here
 
@@ -8,23 +8,49 @@ function [ charlist ] = CharSegmentation( inputImage )
 %Create the list containing the images of the characters
 charlist = cell(1,6);
 
+
+
+
+
 %Convert the image to a grey-value image
-grayImg = rgb2gray(inputImage);
+grayImg = rgb2gray(imsharpen(imsharpen(inputImage)));
 %Apply treshholding
 bw = im2bw(grayImg, graythresh(grayImg));
+
 %Invert the binary image
-bw = imcomplement(bw);
+bwinv = imcomplement(bw);
+
+bwinv = imclearborder(bwinv);
 
 %Label all the differnt objects
-cc = bwconncomp(bw);
+cc = bwconncomp(bwinv);
 %Create an image for every labeled object
-prop = regionprops(cc, 'Image');
+prop = regionprops(cc, 'All');
+
+
+
+    
+
 
 %Create a list of all heights of the labeled images
 sizes = zeros(1,cc.NumObjects);
 for i = 1:cc.NumObjects
+   
+    
+%     figure(i)
+%     image(prop(i). Image);
+
     tempsize = size(prop(i).Image);
+    imgsize = size(inputImage);
     sizes(i) = tempsize(1);
+    
+    if tempsize(1) > .9 * imgsize(1)
+        sizes(i) = 0;
+    elseif tempsize(2) > .25 * imgsize(2)
+        sizes(i) = 0;
+    elseif tempsize(2) < 5
+        sizes(i) = 0;
+    end
 end
 
 %Sorted the heights
@@ -34,14 +60,24 @@ end
 %to the right order
 sortedIndexesSorted = sort(sortedIndexes(1:6), 'ascend');
 
+
+topright = zeros(6,1);
+topleft = zeros(6,1);
 %Get the 6 images of the characters and put them into the list
 for i = 1:6
     charlist{i} = prop(sortedIndexesSorted(i)).Image;
-%      figure(i)
-%      image(imresize(charlist{i},[75,75]))
-%      result = PatternRec(charlist{i});
-%      name = result.name(1);
-%      title(name);
+    boundingbox = prop(sortedIndexesSorted(i)).BoundingBox;
+    topright(i) = boundingbox(1)+boundingbox(3);
+    topleft(i) = boundingbox(1);
 end
+xspace = zeros(5,1);
+for i = 1:5
+   xspace(i)=topleft(i+1)-topright(i); 
+end
+%Get the 2 bigges spaces
+[sortedValues, sortedIndexes] = sort(xspace,'descend');
+id = sortedIndexes(1) + sortedIndexes(2);
+
+
 end
 

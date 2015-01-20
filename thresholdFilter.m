@@ -1,4 +1,4 @@
-function [ data2] = thresholdFilter( frame )
+function [ data2] = thresholdFilter( frame , handles)
 hold on;
 % imshow(frame), axis square;
 frame(:,:,1) = medfilt2(frame(:,:,1),[3 3]);
@@ -29,7 +29,7 @@ SE2 = strel('square',3);
 data2(:,:,2) = uint8(mask) .* frame(:,:,2);
 data2(:,:,3) = uint8(mask) .* frame(:,:,3);
 
-imshow(data2), axis square;
+%imshow(data2), axis square;
  
  
 %imshow(mask), axis square;

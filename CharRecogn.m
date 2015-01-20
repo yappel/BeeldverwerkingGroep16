@@ -1,4 +1,4 @@
-function [ output ] = PatternRec( inputImage )
+function [ output ] = CharRecogn( inputImage )
 %PATTERNREC Recognizes what character is in the input image
 %   Detailed explanation goes here
  fileList = dir('resources/Patterns/*.png');
@@ -7,19 +7,20 @@ function [ output ] = PatternRec( inputImage )
         patternList{K} = imresize(imread(['resources/Patterns/', fileList(K).name]), [75, 75]);
      end
      
-%       for K = 1:length(fileList)
-%         difference(K) = sum(sum(imresize(patternList{K}, [75, 75]) - imresize(inputImage, [75, 75])));
-%      end
-%  [m,index] = min(abs(difference));
+%Resize the input image to be the size of the characterimages
  inputImage=imresize(inputImage,[75,75]);
  pixcount = zeros(5,5);
+ pixsum = 0;
+ %Count the amount of 1 pixels of the inputimage
  for i = 1:5
      for r = 1:5
          pixcount(i,r) = sum(sum(inputImage((i-1)*15+1:i*15,(r-1)*15+1:r*15)));
+         pixsum = pixsum + pixcount(i,r)^2;
      end
  end
  
  pixcount2 = zeros(5,5,length(fileList));
+ %Count the amount of 1 pixels of the character image
  for i = 1:5
      for r = 1:5
          for K = 1:length(fileList)
@@ -32,7 +33,7 @@ function [ output ] = PatternRec( inputImage )
   for i = 1:5
      for r = 1:5
          for K = 1:length(fileList)
-            difference(i,r,K) = abs(pixcount(i,r)-pixcount2(i,r,K))^2;
+              difference(i,r,K) = abs(pixcount(i,r)-pixcount2(i,r,K))^2;
          end
      end
   end
@@ -42,9 +43,16 @@ function [ output ] = PatternRec( inputImage )
         difference2(K) = sum(sum(difference(:,:,K)));
   end
   
-  [m,index] = min(difference2);
- 
- output = fileList(index).name;
- output = output(1);
+  [sortedValues, sortedIndexes] = sort(difference2,'ascend');
+%   [m,index] = min(difference2);
+  
+  output = zeros(3,2);
+ %Give back the 3 most likely chars + the likelyhood
+ for k = 1:3
+     filename = fileList(sortedIndexes(k)).name;
+     output(k,1) = filename(1);
+     output(k,2) = 1-sortedValues(k)/pixsum;
+ end
+
 end
 
