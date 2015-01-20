@@ -31,7 +31,7 @@ iscorrect = ismember(id, allowed);
 if iscorrect == 1
     plate = addLines(character, id); %Add lines between chars on the right places
 elseif numel(allowed) ==0
-    plate = 'error'; %If this happens we do not know how the license plate is supposed to look like
+    plate = ''; %If this happens we do not know how the license plate is supposed to look like
 else
     %There always 2 id allowed and our current id is not one of those
     %Calculate how much characters in the current id are different 
@@ -101,7 +101,8 @@ else
     if iscorrect == 1
         plate = addLines(character, id);
     else
-        plate = [character(1) character(2) character(3) character(4) character(5) character(6)];
+%         plate = [character(1) character(2) character(3) character(4) character(5) character(6)];
+          plate = '';
     end
     
 end

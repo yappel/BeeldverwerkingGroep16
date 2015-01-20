@@ -163,6 +163,8 @@ image(charimg);
 framecounter = 1;
 set(handles.uitable1,'Data',{})
 starttime = cputime;
+
+
 while(hasFrame(handles.vid))
 data = readFrame(handles.vid);
 % data2 = thresholdFilter(data);
@@ -170,17 +172,20 @@ h = get(handles.framevideo,'Children');
 set(h,'CData', data);
 % h2 = get(handles.frametresholded,'Children');
 % set(h2,'CData', data2);
-set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
+% set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
 
 
  
  
-        h = get(handles.frameplate,'Children');
-        plate = getPlate(data);
-%         plate = imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\TrainingsIMGs\Foreground\For_1.png');
-        set(h,'CData', imresize(plate, [NaN(1) 588 ]));
+        
+        plate1 = getPlate(data);
+%----------------------Optional, disable for speed --------------------        
+%         h = get(handles.frameplate,'Children');
+%         set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
+%---------------------------------------------------------------------- 
 
-        [chars, id] = CharSegmentation(plate);
+        [chars, id] = CharSegmentation(plate1);
+        if id > 4 && id < 8
         result{1} = showchar(chars, 1, handles.char1, get(handles.framechar1, 'Children'));
         result{2} = showchar(chars, 2, handles.char2, get(handles.framechar2, 'Children'));
         result{3} = showchar(chars, 3, handles.char3, get(handles.framechar3, 'Children'));
@@ -188,28 +193,26 @@ set(handles.text2, 'String', round(handles.vid.CurrentTime, 2));
         result{5} = showchar(chars, 5, handles.char5, get(handles.framechar5, 'Children'));
         result{6} = showchar(chars, 6, handles.char6, get(handles.framechar6, 'Children'));
         
+        plate = determinePlate(result, id);
+        oldData = get(handles.uitable1,'Data');
+        if ~isempty(oldData)
+            if strcmp(oldData(1),plate) + strcmp(plate,'') == 0
+                newData = [{plate framecounter cputime-starttime}; oldData];
+                set(handles.uitable1,'Data',newData)
+            end
+        else
+            newData = [oldData; {plate framecounter cputime-starttime}];
+            set(handles.uitable1,'Data',newData)
+        end
+        
+        end
         
  
 
 
-plate = determinePlate(result, id);
-oldData = get(handles.uitable1,'Data');
-% if length(oldData) ~= 0
-%     if oldData(length(oldData),1) ~= plate
-%         newData = [oldData; {plate framecounter cputime-starttime}];
-%         set(handles.uitable1,'Data',newData)
-%     end
-% else
-%     newData = [oldData; {plate framecounter cputime-starttime}];
-%     set(handles.uitable1,'Data',newData)
-% end
-
-newData = [oldData; {plate framecounter cputime-starttime}];
-        set(handles.uitable1,'Data',newData)
-
 
 framecounter= framecounter +1;
-%pause(1/handles.vid.FrameRate)
+
 end
 % sampleData = get(handles.uitable1,'Data');
 % checkSolution(sampleData, 'trainingSolutions.mat');
@@ -256,7 +259,6 @@ image(charimg);
         set(h,'CData', imresize(plate, [NaN(1) 588 ]));
 %         imshow(plate)
         [chars, id] = CharSegmentation(plate);
-%         axes(handles.framechar1)
         result{1} = showchar(chars, 1, handles.char1, get(handles.framechar1, 'Children'));
 %         axes(handles.framechar2)
         result{2} = showchar(chars, 2, handles.char2, get(handles.framechar2, 'Children'));
@@ -278,13 +280,12 @@ image(charimg);
 
     
     function result = showchar(chars, i, h, himg)
-        if length(chars{i}) >0
-        set(himg, 'CData', imresize(chars{i}, [150 NaN(1) ]).*255)
-        result = CharRecogn (chars{i});
-        set(h,'String',char(result(1,1)));
-        else
-            result = [zeros(3,2),zeros(3,2),zeros(3,2),zeros(3,2),zeros(3,2),zeros(3,2)]
-        end
+            result = CharRecogn (chars{i});
+            %----------------------Optional, disable for speed -------------------- 
+%             set(himg, 'CData', imresize(chars{i}, [150 NaN(1) ]).*255)
+%             set(h,'String',char(result(1,1)));
+            %---------------------------------------------------------------------- 
+   
 
 
 

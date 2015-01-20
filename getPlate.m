@@ -11,8 +11,6 @@ mask4 = hsidata(:,:,1) < 0.18;
 mask =  mask1 .* mask2 .* mask3 .* mask4 .* mask5;
 
 SE = strel('disk',10);
-SE2 = strel('square',3);
-
 
  mask = imclose(mask,strel('disk',5));
  maskoud = mask;
@@ -129,7 +127,7 @@ end
     maskedImage(:,:,2) = maskedImageG;
     maskedImage(:,:,3) = maskedImageB;
     
-    plate = imcrop(maskedImage, [bounding(1),bounding(2),bounding(3),bounding(4)]);
+    plate = imcrop(frame, [bounding(1),bounding(2),bounding(3),bounding(4)]);
     %imshow(plate);
     %axis square;
 % end 

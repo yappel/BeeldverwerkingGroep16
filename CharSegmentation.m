@@ -28,12 +28,13 @@ cc = bwconncomp(bwinv);
 prop = regionprops(cc, 'All');
 
 
-
+if cc.NumObjects > 5
     
 
 
 %Create a list of all heights of the labeled images
 sizes = zeros(1,cc.NumObjects);
+    
 for i = 1:cc.NumObjects
    
     
@@ -58,7 +59,7 @@ end
 
 %Only take the 6 biggest images (this removes the -) and sort the indexes back
 %to the right order
-if length(sortedIndexes)>5
+
     
 sortedIndexesSorted = sort(sortedIndexes(1:6), 'ascend');
 
@@ -82,7 +83,10 @@ end
 id = sortedIndexes(1) + sortedIndexes(2);
 
 else
+    charlist = [];
     id= 0;
 end
+
 end
+
 
