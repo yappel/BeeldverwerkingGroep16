@@ -2,11 +2,6 @@ function [ plate ] = determinePlate( result, patternid )
 %DETERMINEPLATE Summary of this function goes here
 %   Detailed explanation goes here
 
-for i = 1:3
-    temp(i,1) = char(result{6}(i,1));
-    temp(i,2) = result{6}(i,2);
-end
-temp
 
 %Contains the 6 characters determined by the charRecogn function
 character = ['' '' '' '' '' ''];
