@@ -112,7 +112,7 @@ end
 %    blobCentroidR = props(bestBlobRatio).Centroid; 
 %    text(blobCentroidR(1) - 7, blobCentroidR(2), num2str(bestBlobRatio), 'FontSize', 14, 'FontWeight', 'Bold', 'Color','w');
 % else
-   fprintf(1,'Blob %d is a license plate\n', bestBlobIntensity);
+%    fprintf(1,'Blob %d is a license plate\n', bestBlobIntensity);
    bounding = props(bestBlobIntensity).BoundingBox; 
     keeperBlobsImage = ismember(labeledImage, bestBlobIntensity); 
      % Re-label with only the keeper blobs kept.

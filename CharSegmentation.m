@@ -58,7 +58,10 @@ end
 
 %Only take the 6 biggest images (this removes the -) and sort the indexes back
 %to the right order
+if length(sortedIndexes)>5
+    
 sortedIndexesSorted = sort(sortedIndexes(1:6), 'ascend');
+
 
 
 topright = zeros(6,1);
@@ -78,6 +81,8 @@ end
 [sortedValues, sortedIndexes] = sort(xspace,'descend');
 id = sortedIndexes(1) + sortedIndexes(2);
 
-
+else
+    id= 0;
+end
 end
 

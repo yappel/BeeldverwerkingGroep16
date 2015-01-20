@@ -85,9 +85,9 @@ vid = VideoReader(name);
 frame = readFrame(vid);
 axes(handles.framevideo);
 image(frame)
-data2 = thresholdFilter(frame);
-axes(handles.frametresholded);
-image(data2)
+% data2 = thresholdFilter(frame);
+% axes(handles.frametresholded);
+% image(data2)
 set(handles.text2, 'String', vid.CurrentTime); 
 handles.vid=vid;
 axes(handles.frameplate)
@@ -161,22 +161,23 @@ image(charimg);
         image(charimg);
  %-----------------------------
 framecounter = 1;
-
-
+set(handles.uitable1,'Data',{})
+starttime = cputime;
 while(hasFrame(handles.vid))
 data = readFrame(handles.vid);
-data2 = thresholdFilter(data);
+% data2 = thresholdFilter(data);
 h = get(handles.framevideo,'Children');
 set(h,'CData', data);
-h2 = get(handles.frametresholded,'Children');
-set(h2,'CData', data2);
+% h2 = get(handles.frametresholded,'Children');
+% set(h2,'CData', data2);
 set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
 
 
  
  
         h = get(handles.frameplate,'Children');
-        plate = imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\TrainingsIMGs\Foreground\For_1.png');
+        plate = getPlate(data);
+%         plate = imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\TrainingsIMGs\Foreground\For_1.png');
         set(h,'CData', imresize(plate, [NaN(1) 588 ]));
 
         [chars, id] = CharSegmentation(plate);
@@ -187,17 +188,25 @@ set(handles.text2, 'String', round(handles.vid.CurrentTime, 2));
         result{5} = showchar(chars, 5, handles.char5, get(handles.framechar5, 'Children'));
         result{6} = showchar(chars, 6, handles.char6, get(handles.framechar6, 'Children'));
         
-        plate = determinePlate(result, id);
-        oldData = get(handles.uitable1,'Data');
-        newData = [oldData; {plate id round(handles.vid.CurrentTime, 2)}];
-        set(handles.uitable1,'Data',newData)
+        
  
 
 
 plate = determinePlate(result, id);
 oldData = get(handles.uitable1,'Data');
-newData = [oldData; {plate framecounter 0}];
-set(handles.uitable1,'Data',newData)
+% if length(oldData) ~= 0
+%     if oldData(length(oldData),1) ~= plate
+%         newData = [oldData; {plate framecounter cputime-starttime}];
+%         set(handles.uitable1,'Data',newData)
+%     end
+% else
+%     newData = [oldData; {plate framecounter cputime-starttime}];
+%     set(handles.uitable1,'Data',newData)
+% end
+
+newData = [oldData; {plate framecounter cputime-starttime}];
+        set(handles.uitable1,'Data',newData)
+
 
 framecounter= framecounter +1;
 %pause(1/handles.vid.FrameRate)
@@ -269,9 +278,13 @@ image(charimg);
 
     
     function result = showchar(chars, i, h, himg)
+        if length(chars{i}) >0
         set(himg, 'CData', imresize(chars{i}, [150 NaN(1) ]).*255)
         result = CharRecogn (chars{i});
         set(h,'String',char(result(1,1)));
+        else
+            result = [zeros(3,2),zeros(3,2),zeros(3,2),zeros(3,2),zeros(3,2),zeros(3,2)]
+        end
 
 
 
