@@ -1,6 +1,4 @@
-function [data2] = thresholdFilter( frame , handles)
-%hold on;
-%imshow(frame), axis square;
+function plate = getPlate( frame )
 frame(:,:,1) = medfilt2(frame(:,:,1),[3 3]);
 frame(:,:,2) = medfilt2(frame(:,:,2),[3 3]);
 frame(:,:,3) = medfilt2(frame(:,:,3),[3 3]);
@@ -18,20 +16,12 @@ SE2 = strel('square',3);
 
  mask = imclose(mask,strel('disk',5));
  maskoud = mask;
-% mask = imdilate(mask,SE2);
  mask = imopen(mask,SE);
  
  mask = imdilate(mask,strel('disk',10));
  mask = mask .* maskoud;
  mask = imopen(mask,strel('square',3));
  
- data2(:,:,1) = uint8(mask) .* frame(:,:,1);
-data2(:,:,2) = uint8(mask) .* frame(:,:,2);
-data2(:,:,3) = uint8(mask) .* frame(:,:,3);
-
-%imshow(data2), axis square;
-%imshow(mask), axis square;
-
 % get the connected components (cc)
 cc = bwconncomp(mask);
 labeledImage = bwlabel(mask, 8);     % Label each blob so we can make measurements of it
@@ -123,11 +113,7 @@ end
 %    text(blobCentroidR(1) - 7, blobCentroidR(2), num2str(bestBlobRatio), 'FontSize', 14, 'FontWeight', 'Bold', 'Color','w');
 % else
    fprintf(1,'Blob %d is a license plate\n', bestBlobIntensity);
-   bounding = props(bestBlobIntensity).BoundingBox;
-   rectangle('Position', [bounding(1),bounding(2),bounding(3),bounding(4)]   'EdgeColor','r','LineWidth',2 )
-    blobCentroid = props(bestBlobIntensity).Centroid; 
-    text(blobCentroid(1) - 7, blobCentroid(2), num2str(bestBlobIntensity), 'FontSize', 14, 'FontWeight', 'Bold', 'Color','w');
-    
+   bounding = props(bestBlobIntensity).BoundingBox; 
     keeperBlobsImage = ismember(labeledImage, bestBlobIntensity); 
      % Re-label with only the keeper blobs kept.
     labeledImage = bwlabel(keeperBlobsImage, 8);
@@ -144,19 +130,9 @@ end
     maskedImage(:,:,3) = maskedImageB;
     
     plate = imcrop(maskedImage, [bounding(1),bounding(2),bounding(3),bounding(4)]);
-    imshow(plate);
-    axis square;
+    %imshow(plate);
+    %axis square;
 % end 
-    
+   
+end
 
-%data2 = rgb2gray(data2);
- %data2 = medfilt2(data2,[3 3]);
-%data2 = imsharpen(data2);
-%data2 = edge(hsidata(:,:,3), 'sobel');
-%  SE3 = strel('square', 2);
-%  data2 = imdilate(data2,SE3);
-%  data2 = imerode(data2,SE3);
-% 
-%  data2 = imfill(data2, 'holes');
-end 
- 

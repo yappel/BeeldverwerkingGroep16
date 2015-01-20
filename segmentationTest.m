@@ -16,8 +16,9 @@ for K = 1:length(filelist)
   vid = VideoReader(['resources/Trainingsset/Categorie I/', filelist(K).name]);
   frame = readFrame(vid);
   fprintf(1,[num2str(K) ': \n']);
-  frame2 = thresholdFilter(frame);
-  %frame2 = rotation(frame);
+  %frame2 = thresholdFilter(frame);
+  frame2 = getPlate(frame);
+  imshow(frame2);
   pause
   name = ['resources/SegmentationTest/test', num2str(K), '.png'];
   imwrite(frame2, name);
