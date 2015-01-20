@@ -143,6 +143,9 @@ function buttonplay_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+profile on
+
+
 %------------INIT AXES-------------
 axes(handles.frameplate)
 image(imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\GUI\Nummerplaat.png'));
@@ -180,8 +183,8 @@ set(h,'CData', data);
         
         plate1 = getPlate(data);
 %----------------------Optional, disable for speed --------------------        
-%         h = get(handles.frameplate,'Children');
-%         set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
+        h = get(handles.frameplate,'Children');
+        set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
 %---------------------------------------------------------------------- 
 
         [chars, id] = CharSegmentation(plate1);
@@ -214,8 +217,12 @@ set(h,'CData', data);
 framecounter= framecounter +1;
 
 end
-% sampleData = get(handles.uitable1,'Data');
-% checkSolution(sampleData, 'trainingSolutions.mat');
+ sampleData = get(handles.uitable1,'Data');
+ checkSolution(sampleData, 'trainingSolutions.mat');
+
+profile viewer
+p = profile('info');
+profsave(p, 'profile_results')
 
 
 
@@ -282,8 +289,8 @@ image(charimg);
     function result = showchar(chars, i, h, himg)
             result = CharRecogn (chars{i});
             %----------------------Optional, disable for speed -------------------- 
-%             set(himg, 'CData', imresize(chars{i}, [150 NaN(1) ]).*255)
-%             set(h,'String',char(result(1,1)));
+            set(himg, 'CData', imresize(chars{i}, [150 NaN(1) ]).*255)
+            set(h,'String',char(result(1,1)));
             %---------------------------------------------------------------------- 
    
 
