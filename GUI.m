@@ -86,12 +86,13 @@ frame = readFrame(vid);
 axes(handles.framevideo);
 image(frame)
 % data2 = thresholdFilter(frame);
-% axes(handles.frametresholded);
-% image(data2)
-set(handles.text2, 'String', vid.CurrentTime);
+
+axes(handles.frametresholded);
+image(frame)
+set(handles.text2, 'String', vid.CurrentTime); 
 handles.vid=vid;
 axes(handles.frameplate)
-image(imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\GUI\Nummerplaat.png'));
+image(imread('resources/GUI/Nummerplaat.png'));
 guidata(hObject,handles);
 
 
@@ -148,7 +149,7 @@ function buttonplay_Callback(hObject, eventdata, handles)
 
 %------------INIT AXES-------------
 axes(handles.frameplate)
-image(imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\GUI\Nummerplaat.png'));
+image(imread('resources/GUI/Nummerplaat.png'));
 axes(handles.framechar1)
 charimg = false(150,150);
 image(charimg);
@@ -172,34 +173,35 @@ savedPlates = [''];
 platecounter = [];
 
 
-
 while(hasFrame(handles.vid))
-    data = readFrame(handles.vid);
-    % data2 = thresholdFilter(data);
-    h = get(handles.framevideo,'Children');
-    set(h,'CData', data);
-    % h2 = get(handles.frametresholded,'Children');
-    % set(h2,'CData', data2);
-    % set(handles.text2, 'String', round(handles.vid.CurrentTime, 2));
-    
-    means(1,1) = means(1,2);
+data = readFrame(handles.vid);
+% data2 = thresholdFilter(data);
+h = get(handles.framevideo,'Children');
+set(h,'CData', data);
+
+[plate1, boxed] = getPlate(data);
+
+h2 = get(handles.frametresholded,'Children');
+set(h2,'CData', boxed);
+% set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
+
+
+ means(1,1) = means(1,2);
     means(2,1) = means(2,2);
     means(3,1) = means(3,2);
     means(1,2) = mean(mean(data(:,:,1)));
     means(2,2) = mean(mean(data(:,:,2)));
     means(3,2) = mean(mean(data(:,:,3)));
     newscene = means(1,1)-means(1,2) > 10;
-    
-    
-    
-    plate1 = getPlate(data);
-    %----------------------Optional, disable for speed --------------------
-    h = get(handles.frameplate,'Children');
-    set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
-    %----------------------------------------------------------------------
-    
-    [chars, id] = CharSegmentation(plate1);
-    if id > 4 && id < 8
+ 
+       
+%----------------------Optional, disable for speed --------------------        
+        h = get(handles.frameplate,'Children');
+        set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
+%---------------------------------------------------------------------- 
+
+        [chars, id] = CharSegmentation(plate1);
+        if id > 4 && id < 8
         result{1} = showchar(chars, 1, handles.char1, get(handles.framechar1, 'Children'));
         result{2} = showchar(chars, 2, handles.char2, get(handles.framechar2, 'Children'));
         result{3} = showchar(chars, 3, handles.char3, get(handles.framechar3, 'Children'));
@@ -269,15 +271,15 @@ set(handles.uitable1,'Data',{})
 % [FileName,PathName,FilterIndex] = uigetfile('*.png','MultiSelect','on');
 FileName = {'For_1.png'    'For_2.png'    'For_3.png'    'For_4.png'    'For_5.png'    'For_6.png'    'For_7.png'  'For_8.png'    'For_9.png'    'For_10.png'    'For_11.png'    'For_12.png'    'For_13.png'    'For_14.png' 'For_15.png'    'For_16.png'    'For_17.png'    'For_18.png'    'For_19.png'    'For_20.png'    'For_21.png' 'For_22.png'    'For_23.png'    'For_24.png'    'For_25.png'    'For_26.png'    'For_27.png'    'For_28.png' 'For_29.png'    'For_30.png' };
 % FileName = {'For_10.png'};
-PathName = 'C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\TrainingsIMGs\Foreground\';
+PathName = 'resources/TrainingsIMGs/Foreground/';
 %     axes(handles.frameplate);
 %     imshow(imread([PathName, FileName{1}]))
 
 axes(handles.frameplate)
-image(imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\GUI\Nummerplaat.png'));
+image(imread('resources/GUI/Nummerplaat.png'));
 axes(handles.framechar1)
 % colormap(gray);
-% charimg = imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\GUI\letter.png');
+% charimg = imread('resources/GUI/letter.png');
 charimg = false(150,150);
 image(charimg);
 axes(handles.framechar2)
