@@ -2,12 +2,15 @@ function [ plate ] = determinePlate( result, patternid )
 %DETERMINEPLATE Summary of this function goes here
 %   Detailed explanation goes here
 
-
 %Contains the 6 characters determined by the charRecogn function
-character = ['' '' '' '' '' ''];
+character = ['', '', '', '', '', ''];
+likelyhoodAlg = 0;
 for i = 1:6
     character(i) = char(result{i}(1,1));
+    
+    likelyhoodAlg = likelyhoodAlg + result{i}(1,2);
 end
+class(character(1))
 
 %For every element check if it is a letter or a number
 check = isletter(character);
@@ -49,7 +52,9 @@ else
         %Change everyone of them
         for k = 1:length(charWrongIndex)
             for i = 1:(6-sum(difference(:,1)))
-                character = changeWrongChar(character, charWrongIndex(k), result);
+                out = changeWrongChar(character, charWrongIndex(k), result, likelyhoodAlg);
+                character = out{1};
+                likelyhoodAlg = out{2};
             end
         end
     %If the id closer to allowed id number 2
@@ -57,7 +62,9 @@ else
         [notimportant, charWrongIndex] = min(difference(:,2));
         for k = 1:length(charWrongIndex)
             for i = 1:(6-sum(difference(:,2)))
-               character = changeWrongChar(character, charWrongIndex(k), result);
+               out = changeWrongChar(character, charWrongIndex(k), result, likelyhoodAlg);
+                character = out{1};
+                likelyhoodAlg = out{2};
             end
         end
     else
@@ -66,11 +73,11 @@ else
         characterOptions = cell(2,1);
         characterOptions{1} = character;
         characterOptions{2} = character;
-        Likelyhood =[0, 0]; %Sum of all the % correct of all the chars
-        for i = 1:6
-            Likelyhood(1) =  Likelyhood(1) + result{i}(1,2);
-            Likelyhood(2) =  Likelyhood(2) + result{i}(1,2);
-        end
+        Likelyhood =[likelyhoodAlg, likelyhoodAlg]; %Sum of all the % correct of all the chars
+%         for i = 1:6
+%             Likelyhood(1) =  Likelyhood(1) + result{i}(1,2);
+%             Likelyhood(2) =  Likelyhood(2) + result{i}(1,2);
+%         end
 
         amountRight = sum(difference(:,1)); %== sum(difference(:,2)
         
@@ -87,8 +94,10 @@ else
         
         if Likelyhood(1) > Likelyhood(2)
             character = characterOptions{1};
+            likelyhoodAlg = Likelyhood(1);
         else
             character = characterOptions{2};
+            likelyhoodAlg = Likelyhood(2);
         end
     end   
     
@@ -105,6 +114,12 @@ else
           plate = '';
     end
     
+end
+
+if ~strcmp(plate,'')
+    if likelyhoodAlg < 2.4
+        plate = '';
+    end
 end
 
 end
@@ -128,7 +143,8 @@ end
 
 
 function [out] = changeWrongChar(character, index, result, likelyhood)
-    
+    test1 = character
+    test2 = index
     isLetter = isletter(character(index));
     option1 = char(result{index}(2,1));
     option2 = char(result{index}(3,1));

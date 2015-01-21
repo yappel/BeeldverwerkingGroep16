@@ -53,6 +53,14 @@ charnames = file.charnames;
   output = zeros(3,2);
   if sortedIndexes(1) == 22 || sortedIndexes(1) == 15
       
+      testH = (pixcount(1,3)-pixcount2(1,3,15))^2 + (pixcount(3,5)-pixcount2(3,5,15))^2;
+      testR = (pixcount(1,3)-pixcount2(1,3,22))^2 + (pixcount(3,5)-pixcount2(3,5,22))^2;
+      if testH > testR
+          sortedIndexes(1) = 22;
+      else
+          sortedIndexes(1) = 15;
+      end
+      
   end
  %Give back the 3 most likely chars + the likelyhood
  for k = 1:3
