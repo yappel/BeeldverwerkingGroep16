@@ -1,0 +1,5 @@
+Sommige karakters zijn bijna onmogelijk om uit elkaar te houden ( (D,O), (8,B), etc), maar gelukkig hebben de Nederlandse nummerborden duidelijke regels.
+In deze stap controleren we of de 6 karakters een geldig nummerbord vormen en als dit niet het geval is, of we een paar karakters kunnen veranderen zodat 
+ze wel een geldig nummerbord vormen. Voor elk gesegmenteerd karakter hebben we een aantal karakters bepaald en voor elk van deze karakters hebben we het 
+percentage dat dit plaatje overeen kwam met het karakter. Als de 6 karakters met de hoogste percentages geen geldig nummerbord vormen, vervangen we 
+karakters zodat de reeks wel een geldig nummerbord vormt. Hierbij zorgen we dat de som van de percentages zo groot mogelijk blijft.
