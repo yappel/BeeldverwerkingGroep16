@@ -143,7 +143,7 @@ function buttonplay_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-profile on
+% profile on
 
 
 %------------INIT AXES-------------
@@ -164,12 +164,15 @@ axes(handles.framechar6)
 image(charimg);
 %-----------------------------
 framecounter = 1;
+sceneframe= 1;
 set(handles.uitable1,'Data',{})
 starttime = cputime;
+tic
 newscene = 1;
 means = zeros(3,2);
 savedPlates = [''];
 platecounter = zeros(10,1);
+testOud = {};
 
 
 while(hasFrame(handles.vid))
@@ -191,24 +194,7 @@ while(hasFrame(handles.vid))
     %     means(2,2) = mean(mean(data(:,:,2)));
     %     means(3,2) = mean(mean(data(:,:,3)));
     %     newscene = means(1,1)-means(1,2) > 10;
-    newscene = 0;
-    if ~isempty(savedPlates) && ~strcmp(plate, '')
-        lastPlate = savedPlates(end,:);
-        
-        difference = zeros(8,1);
-        
-        for n=1:8
-            difference(n) = strcmp(lastPlate(n), plate(n));
-        end
-        sumDiffPlates = sum(difference)
-        
-        if sumDiffPlates < 6
-            newscene = 1;
-            oldData = get(handles.uitable1,'Data');
-            newData = [{'x x x' framecounter cputime-starttime}; oldData];
-            set(handles.uitable1,'Data',newData)
-        end
-    end
+   
     
     
     %----------------------Optional, disable for speed --------------------
@@ -225,16 +211,40 @@ while(hasFrame(handles.vid))
         result{5} = showchar(chars, 5, handles.char5, get(handles.framechar5, 'Children'));
         result{6} = showchar(chars, 6, handles.char6, get(handles.framechar6, 'Children'));
         
-        plate = determinePlate(result, id);
+        plate = determinePlate(result, id); newscene = 0;
+        [m,~] = size(savedPlates);
+    if m>1 && ~strcmp(plate, '')
+        lastPlate = savedPlates(end,:);
+        lastlastPlate = savedPlates(end-1,:);
+        
+        difference = zeros(8,2);
+        
+        for n=1:8
+            difference(n,1) = strcmp(lastlastPlate(n), lastPlate(n));
+            difference(n,2) = strcmp(lastlastPlate(n), plate(n));
+        end
+       
+        sumDiffPlates = sum(difference(:,1));
+        sumDiffPlates1 = sum(difference(:,2));
+         testNew = {sumDiffPlates; sumDiffPlates1; plate; lastPlate; lastlastPlate}
+%          if ~isequal(testNew,testOud)
+%              testOud = testNew
+%          end
+        
+        if sumDiffPlates < 6 && sumDiffPlates1 < 6 && (framecounter - sceneframe) >18
+            newscene = 1;
+        end
+    end
+    
         oldData = get(handles.uitable1,'Data');
         if strcmp(plate,'') == 0
             if newscene
-                
                 [~, index] = max(platecounter);
-                newData = [{savedPlates(index,:) framecounter cputime-starttime}; oldData];
+                newData = [{savedPlates(index,:) sceneframe+index toc}; oldData];
                 set(handles.uitable1,'Data',newData)
                 savedPlates = [];
                 platecounter = zeros(10,1);
+                sceneframe = framecounter;
             else
                 ind = 0;
                 if ~isempty(savedPlates(:))
@@ -271,9 +281,9 @@ end
 sampleData = get(handles.uitable1,'Data');
 checkSolution(sampleData, 'trainingSolutions.mat');
 
-profile viewer
-p = profile('info');
-profsave(p, 'profile_results')
+% profile viewer
+% p = profile('info');
+% profsave(p, 'profile_results')
 
 
 
