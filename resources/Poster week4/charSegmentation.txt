@@ -1,0 +1,9 @@
+Karakter segmentatie
+In deze stap was het de bedoeling dat we het gesegmenteerde nummerbord pakte en uit dat plaatje 6 karakters segmenteerde.
+We hebben dit wederom met thresholding gedaan, maar wel op een iets andere manier. Elk nummerbord heeft net een andere kleur (door bijvoorbeeld belichting),
+maar op elk nummerbord kan je de karakters herkennen doordat de letters een donkere kleur hebben en de achtergrond een lichte. Daarom hebben
+we ervoor gekozen om het input plaatje om te zetten in een grijswaarden plaatje en vervolgens met de ingebouwde matlab functie graythresh gebruikt om
+een threshold te bepalen. Graythresh maakt gebruik van Otsu's methode bij het bepalen van de threshold. We hebben ook nog een sharpening filter op 
+de input gebruikt om de randen te versterken en na thresholding hebben we bepaald welke objecten de karakters waren door naar bepaalde eigenschappen
+van de objecten te bekijken (hoogte/breedte verhouding, grootte, locatie in het beeld, etc). Nadat we de 6 objecten hebben bepaald, hebben we gekenen naar de
+afstand tussen deze objecten om te bepalen wat voor soort nummerbord het is (bijv. '99-XX-99' of '99-XXX-9').
