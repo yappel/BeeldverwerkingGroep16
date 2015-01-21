@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 20-Jan-2015 00:19:08
+% Last Modified by GUIDE v2.5 21-Jan-2015 13:40:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -44,7 +44,7 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before GUI is made visible.
+% --- Executes just before GUI is made visible. 
 function GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
@@ -57,6 +57,10 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+axes(handles.axes13);
+image(imread('resources/GUI/titel.png'));
+set(handles.axes13,'XTick', [])
+set(handles.axes13,'YTick', [])
 
 % UIWAIT makes GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -85,13 +89,15 @@ vid = VideoReader(name);
 frame = readFrame(vid);
 axes(handles.framevideo);
 image(frame)
+set(handles.framevideo,'XTick', [])
+set(handles.framevideo,'YTick', [])
 
 axes(handles.frametresholded);
 image(frame)
-set(handles.text2, 'String', vid.CurrentTime);
+set(handles.frametresholded,'XTick', [])
+set(handles.frametresholded,'YTick', [])
+% set(handles.text2, 'String', vid.CurrentTime);
 handles.vid=vid;
-axes(handles.frameplate)
-image(imread('resources/GUI/Nummerplaat.png'));
 guidata(hObject,handles);
 
 
@@ -149,19 +155,33 @@ function buttonplay_Callback(hObject, eventdata, handles)
 %------------INIT AXES-------------
 axes(handles.frameplate)
 image(imread('resources/GUI/Nummerplaat.png'));
+set(handles.frameplate,'XTick', [])
+set(handles.frameplate,'YTick', [])
 axes(handles.framechar1)
 charimg = false(150,150);
 image(charimg);
+set(handles.framechar1,'XTick', [])
+set(handles.framechar1,'YTick', [])
 axes(handles.framechar2)
 image(charimg);
+set(handles.framechar2,'XTick', [])
+set(handles.framechar2,'YTick', [])
 axes(handles.framechar3)
 image(charimg);
+set(handles.framechar3,'XTick', [])
+set(handles.framechar3,'YTick', [])
 axes(handles.framechar4)
 image(charimg);
+set(handles.framechar4,'XTick', [])
+set(handles.framechar4,'YTick', [])
 axes(handles.framechar5)
 image(charimg);
+set(handles.framechar5,'XTick', [])
+set(handles.framechar5,'YTick', [])
 axes(handles.framechar6)
 image(charimg);
+set(handles.framechar6,'XTick', [])
+set(handles.framechar6,'YTick', [])
 %-----------------------------
 framecounter = 1;
 sceneframe= 1;
@@ -226,7 +246,7 @@ while(hasFrame(handles.vid))
        
         sumDiffPlates = sum(difference(:,1));
         sumDiffPlates1 = sum(difference(:,2));
-         testNew = {sumDiffPlates; sumDiffPlates1; plate; lastPlate; lastlastPlate}
+%          testNew = {sumDiffPlates; sumDiffPlates1; plate; lastPlate; lastlastPlate}
 %          if ~isequal(testNew,testOud)
 %              testOud = testNew
 %          end
@@ -240,7 +260,7 @@ while(hasFrame(handles.vid))
         if strcmp(plate,'') == 0
             if newscene
                 [~, index] = max(platecounter);
-                newData = [{savedPlates(index,:) sceneframe+index toc}; oldData];
+                newData = [{savedPlates(index,:) sceneframe+index int64(toc*1000)}; oldData];
                 set(handles.uitable1,'Data',newData)
                 savedPlates = [];
                 platecounter = zeros(10,1);
@@ -363,3 +383,7 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 uiresume(handles.figure1)
+
+
+
+% Hint: place code in OpeningFcn to populate axes12
