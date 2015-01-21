@@ -88,7 +88,7 @@ image(frame)
 
 axes(handles.frametresholded);
 image(frame)
-set(handles.text2, 'String', vid.CurrentTime); 
+set(handles.text2, 'String', vid.CurrentTime);
 handles.vid=vid;
 axes(handles.frameplate)
 image(imread('resources/GUI/Nummerplaat.png'));
@@ -143,7 +143,7 @@ function buttonplay_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
- profile on
+profile on
 
 
 %------------INIT AXES-------------
@@ -173,33 +173,51 @@ platecounter = zeros(10,1);
 
 
 while(hasFrame(handles.vid))
-data = readFrame(handles.vid);
-h = get(handles.framevideo,'Children');
-set(h,'CData', data);
-
-[plate1, boxed] = getPlate(data);
-
-h2 = get(handles.frametresholded,'Children');
-set(h2,'CData', boxed);
-% set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
-
-
-    means(1,1) = means(1,2);
-    means(2,1) = means(2,2);
-    means(3,1) = means(3,2);
-    means(1,2) = mean(mean(data(:,:,1)));
-    means(2,2) = mean(mean(data(:,:,2)));
-    means(3,2) = mean(mean(data(:,:,3)));
-    newscene = means(1,1)-means(1,2) > 10;
- 
-       
-%----------------------Optional, disable for speed --------------------        
-        h = get(handles.frameplate,'Children');
-        set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
-%---------------------------------------------------------------------- 
-
-        [chars, id] = CharSegmentation(plate1);
-        if id > 4 && id < 8
+    data = readFrame(handles.vid);
+    h = get(handles.framevideo,'Children');
+    set(h,'CData', data);
+    
+    [plate1, boxed] = getPlate(data);
+    
+    h2 = get(handles.frametresholded,'Children');
+    set(h2,'CData', boxed);
+    % set(handles.text2, 'String', round(handles.vid.CurrentTime, 2));
+    
+    %
+    %     means(1,1) = means(1,2);
+    %     means(2,1) = means(2,2);
+    %     means(3,1) = means(3,2);
+    %     means(1,2) = mean(mean(data(:,:,1)));
+    %     means(2,2) = mean(mean(data(:,:,2)));
+    %     means(3,2) = mean(mean(data(:,:,3)));
+    %     newscene = means(1,1)-means(1,2) > 10;
+    newscene = 0;
+    if ~isempty(savedPlates) && ~strcmp(plate, '')
+        lastPlate = savedPlates(end,:);
+        
+        difference = zeros(8,1);
+        
+        for n=1:8
+            difference(n) = strcmp(lastPlate(n), plate(n));
+        end
+        sumDiffPlates = sum(difference)
+        
+        if sumDiffPlates < 6
+            newscene = 1;
+            oldData = get(handles.uitable1,'Data');
+            newData = [{'x x x' framecounter cputime-starttime}; oldData];
+            set(handles.uitable1,'Data',newData)
+        end
+    end
+    
+    
+    %----------------------Optional, disable for speed --------------------
+    h = get(handles.frameplate,'Children');
+    set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
+    %----------------------------------------------------------------------
+    
+    [chars, id] = CharSegmentation(plate1);
+    if id > 4 && id < 8
         result{1} = showchar(chars, 1, handles.char1, get(handles.framechar1, 'Children'));
         result{2} = showchar(chars, 2, handles.char2, get(handles.framechar2, 'Children'));
         result{3} = showchar(chars, 3, handles.char3, get(handles.framechar3, 'Children'));
@@ -209,39 +227,37 @@ set(h2,'CData', boxed);
         
         plate = determinePlate(result, id);
         oldData = get(handles.uitable1,'Data');
-        if ~isempty(oldData)
-            %             if strcmp(oldData(1),plate) + strcmp(plate,'') == 0
-            if strcmp(oldData(1),plate) + strcmp(oldData(2),plate)+ strcmp(plate,'') == 0
+        if strcmp(plate,'') == 0
+            if newscene
                 
-                if newscene
-                    [~, index] = max(platecounter);
-                    newData = [{savedPlates(index,:) framecounter cputime-starttime}; oldData];
-                    set(handles.uitable1,'Data',newData)
-                    savedPlates = [];
-                    platecounter = zeros(10,1);
-                else
-                        ind = 0;
-                        if ~isempty(savedPlates(:))
-                            [m,~] = size(savedPlates);
-                            for k = 1:m
-                                if strcmp(savedPlates(k,:), plate)
-                                    ind = k;
-                                end
-                            end
+                [~, index] = max(platecounter);
+                newData = [{savedPlates(index,:) framecounter cputime-starttime}; oldData];
+                set(handles.uitable1,'Data',newData)
+                savedPlates = [];
+                platecounter = zeros(10,1);
+            else
+                ind = 0;
+                if ~isempty(savedPlates(:))
+                    [m,~] = size(savedPlates);
+                    for k = 1:m
+                        if strcmp(savedPlates(k,:), plate)
+                            ind = k;
                         end
-                        if ind ~= 0
-                            platecounter(ind) = platecounter(ind) +1;
-                        else
-                            savedPlates=[savedPlates;plate];
-                        end
+                    end
                 end
-%                                 newData = [{plate framecounter cputime-starttime}; oldData];
-%                                 set(handles.uitable1,'Data',newData)
+                if ind ~= 0
+                    platecounter(ind) = platecounter(ind) +1;
+                else
+                    savedPlates=[savedPlates;plate];
+                end
             end
-        else
-            newData = [oldData; {plate framecounter cputime-starttime}];
-            set(handles.uitable1,'Data',newData)
+            
+            %                                 newData = [{plate framecounter cputime-starttime}; oldData];
+            %                                 set(handles.uitable1,'Data',newData)
         end
+        %savedPlates
+        %         else
+        %             newData = [oldData; {plate framecounter cputime-starttime}];
         
     end
     

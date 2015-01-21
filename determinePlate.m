@@ -10,7 +10,6 @@ for i = 1:6
     
     likelyhoodAlg = likelyhoodAlg + result{i}(1,2);
 end
-class(character(1))
 
 %For every element check if it is a letter or a number
 check = isletter(character);
@@ -143,8 +142,6 @@ end
 
 
 function [out] = changeWrongChar(character, index, result, likelyhood)
-    test1 = character
-    test2 = index
     isLetter = isletter(character(index));
     option1 = char(result{index}(2,1));
     option2 = char(result{index}(3,1));
