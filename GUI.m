@@ -27,11 +27,11 @@ function varargout = GUI(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @GUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @GUI_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @GUI_OpeningFcn, ...
+    'gui_OutputFcn',  @GUI_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -63,7 +63,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = GUI_OutputFcn(hObject, eventdata, handles) 
+function varargout = GUI_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -88,7 +88,7 @@ image(frame)
 % data2 = thresholdFilter(frame);
 % axes(handles.frametresholded);
 % image(data2)
-set(handles.text2, 'String', vid.CurrentTime); 
+set(handles.text2, 'String', vid.CurrentTime);
 handles.vid=vid;
 axes(handles.frameplate)
 image(imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\GUI\Nummerplaat.png'));
@@ -105,9 +105,9 @@ guidata(hObject,handles);
 % hf = handles.axes1;
 % for k = 1 : nFrames
 %     mov(k).cdata = read(vid,k);
-%     
+%
 % end
-% 
+%
 % %set(hf, 'position', [150 150 vidWidth vidHeight])
 % movie(hf, mov, 1, vid.FrameRate);
 
@@ -143,7 +143,7 @@ function buttonplay_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-profile on
+% profile on
 
 
 %------------INIT AXES-------------
@@ -152,43 +152,54 @@ image(imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\G
 axes(handles.framechar1)
 charimg = false(150,150);
 image(charimg);
-        axes(handles.framechar2)
-        image(charimg);
-        axes(handles.framechar3)
-        image(charimg);
-        axes(handles.framechar4)
-        image(charimg);
-        axes(handles.framechar5)
-        image(charimg);
-        axes(handles.framechar6)
-        image(charimg);
- %-----------------------------
+axes(handles.framechar2)
+image(charimg);
+axes(handles.framechar3)
+image(charimg);
+axes(handles.framechar4)
+image(charimg);
+axes(handles.framechar5)
+image(charimg);
+axes(handles.framechar6)
+image(charimg);
+%-----------------------------
 framecounter = 1;
 set(handles.uitable1,'Data',{})
 starttime = cputime;
+newscene = 1;
+means = zeros(3,2);
+savedPlates = [''];
+platecounter = [];
+
 
 
 while(hasFrame(handles.vid))
-data = readFrame(handles.vid);
-% data2 = thresholdFilter(data);
-h = get(handles.framevideo,'Children');
-set(h,'CData', data);
-% h2 = get(handles.frametresholded,'Children');
-% set(h2,'CData', data2);
-% set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
-
-
- 
- 
-        
-        plate1 = getPlate(data);
-%----------------------Optional, disable for speed --------------------        
-        h = get(handles.frameplate,'Children');
-        set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
-%---------------------------------------------------------------------- 
-
-        [chars, id] = CharSegmentation(plate1);
-        if id > 4 && id < 8
+    data = readFrame(handles.vid);
+    % data2 = thresholdFilter(data);
+    h = get(handles.framevideo,'Children');
+    set(h,'CData', data);
+    % h2 = get(handles.frametresholded,'Children');
+    % set(h2,'CData', data2);
+    % set(handles.text2, 'String', round(handles.vid.CurrentTime, 2));
+    
+    means(1,1) = means(1,2);
+    means(2,1) = means(2,2);
+    means(3,1) = means(3,2);
+    means(1,2) = mean(mean(data(:,:,1)));
+    means(2,2) = mean(mean(data(:,:,2)));
+    means(3,2) = mean(mean(data(:,:,3)));
+    newscene = means(1,1)-means(1,2) > 10;
+    
+    
+    
+    plate1 = getPlate(data);
+    %----------------------Optional, disable for speed --------------------
+    h = get(handles.frameplate,'Children');
+    set(h,'CData', imresize(plate1, [NaN(1) 588 ]));
+    %----------------------------------------------------------------------
+    
+    [chars, id] = CharSegmentation(plate1);
+    if id > 4 && id < 8
         result{1} = showchar(chars, 1, handles.char1, get(handles.framechar1, 'Children'));
         result{2} = showchar(chars, 2, handles.char2, get(handles.framechar2, 'Children'));
         result{3} = showchar(chars, 3, handles.char3, get(handles.framechar3, 'Children'));
@@ -199,30 +210,53 @@ set(h,'CData', data);
         plate = determinePlate(result, id);
         oldData = get(handles.uitable1,'Data');
         if ~isempty(oldData)
-            if strcmp(oldData(1),plate) + strcmp(plate,'') == 0
-                newData = [{plate framecounter cputime-starttime}; oldData];
-                set(handles.uitable1,'Data',newData)
+            %             if strcmp(oldData(1),plate) + strcmp(plate,'') == 0
+            if strcmp(oldData(1),plate) + strcmp(oldData(2),plate)+ strcmp(plate,'') == 0
+                
+%                 if newscene
+%                     [~, index] = max(platecounter);
+%                     index
+%                     savedPlates(index)
+%                     newData = [{savedPlates(index) framecounter cputime-starttime}; oldData];
+%                     set(handles.uitable1,'Data',newData)
+%                 else
+%                         ind = 0;
+%                         if isempty(savedPlates) > 0
+%                             for l = 1:length(savedPlates)
+%                                 if strcmp(savedPlates(l), plate)
+%                                     ind = l;
+%                                 end
+%                             end
+%                         end
+%                         if ind ~= 0
+%                             platecounter(ind) = platecounter(ind) +1
+%                         else
+%                             savedPlates=[savedPlates;plate];
+%                         end
+%                 end
+                                newData = [{plate framecounter cputime-starttime}; oldData];
+                                set(handles.uitable1,'Data',newData)
             end
         else
             newData = [oldData; {plate framecounter cputime-starttime}];
             set(handles.uitable1,'Data',newData)
         end
         
-        end
-        
- 
-
-
-
-framecounter= framecounter +1;
-
+    end
+    
+    
+    
+    
+    
+    framecounter= framecounter +1;
+    
 end
- sampleData = get(handles.uitable1,'Data');
- checkSolution(sampleData, 'trainingSolutions.mat');
+sampleData = get(handles.uitable1,'Data');
+checkSolution(sampleData, 'trainingSolutions.mat');
 
-profile viewer
-p = profile('info');
-profsave(p, 'profile_results')
+% profile viewer
+% p = profile('info');
+% profsave(p, 'profile_results')
 
 
 
@@ -246,53 +280,53 @@ axes(handles.framechar1)
 % charimg = imread('C:\Users\yoeri\Documents\GitHub\BeeldverwerkingGroep16\resources\GUI\letter.png');
 charimg = false(150,150);
 image(charimg);
-        axes(handles.framechar2)
-        image(charimg);
-        axes(handles.framechar3)
-        image(charimg);
-        axes(handles.framechar4)
-        image(charimg);
-        axes(handles.framechar5)
-        image(charimg);
-        axes(handles.framechar6)
-        image(charimg);
+axes(handles.framechar2)
+image(charimg);
+axes(handles.framechar3)
+image(charimg);
+axes(handles.framechar4)
+image(charimg);
+axes(handles.framechar5)
+image(charimg);
+axes(handles.framechar6)
+image(charimg);
 
 
-    for K = 1:length(FileName)
-        h = get(handles.frameplate,'Children');
-%         axes(handles.frameplate);
-%         set(h,'CData', imread([PathName, FileName{K}]));
-        plate = imread([PathName, FileName{K}]);
-        set(h,'CData', imresize(plate, [NaN(1) 588 ]));
-%         imshow(plate)
-        [chars, id] = CharSegmentation(plate);
-        result{1} = showchar(chars, 1, handles.char1, get(handles.framechar1, 'Children'));
-%         axes(handles.framechar2)
-        result{2} = showchar(chars, 2, handles.char2, get(handles.framechar2, 'Children'));
-%         axes(handles.framechar3)
-        result{3} = showchar(chars, 3, handles.char3, get(handles.framechar3, 'Children'));
-%         axes(handles.framechar4)
-        result{4} = showchar(chars, 4, handles.char4, get(handles.framechar4, 'Children'));
-%         axes(handles.framechar5)
-        result{5} = showchar(chars, 5, handles.char5, get(handles.framechar5, 'Children'));
-%         axes(handles.framechar6)
-        result{6} = showchar(chars, 6, handles.char6, get(handles.framechar6, 'Children'));
-        
-        plate = determinePlate(result, id);
-        oldData = get(handles.uitable1,'Data');
-        newData = [oldData; {plate id 0}];
-        set(handles.uitable1,'Data',newData)
-        uiwait(handles.figure1);
-    end
-
+for K = 1:length(FileName)
+    h = get(handles.frameplate,'Children');
+    %         axes(handles.frameplate);
+    %         set(h,'CData', imread([PathName, FileName{K}]));
+    plate = imread([PathName, FileName{K}]);
+    set(h,'CData', imresize(plate, [NaN(1) 588 ]));
+    %         imshow(plate)
+    [chars, id] = CharSegmentation(plate);
+    result{1} = showchar(chars, 1, handles.char1, get(handles.framechar1, 'Children'));
+    %         axes(handles.framechar2)
+    result{2} = showchar(chars, 2, handles.char2, get(handles.framechar2, 'Children'));
+    %         axes(handles.framechar3)
+    result{3} = showchar(chars, 3, handles.char3, get(handles.framechar3, 'Children'));
+    %         axes(handles.framechar4)
+    result{4} = showchar(chars, 4, handles.char4, get(handles.framechar4, 'Children'));
+    %         axes(handles.framechar5)
+    result{5} = showchar(chars, 5, handles.char5, get(handles.framechar5, 'Children'));
+    %         axes(handles.framechar6)
+    result{6} = showchar(chars, 6, handles.char6, get(handles.framechar6, 'Children'));
     
-    function result = showchar(chars, i, h, himg)
-            result = CharRecogn (chars{i});
-            %----------------------Optional, disable for speed -------------------- 
-            set(himg, 'CData', imresize(chars{i}, [150 NaN(1) ]).*255)
-            set(h,'String',char(result(1,1)));
-            %---------------------------------------------------------------------- 
-   
+    plate = determinePlate(result, id);
+    oldData = get(handles.uitable1,'Data');
+    newData = [oldData; {plate id 0}];
+    set(handles.uitable1,'Data',newData)
+    uiwait(handles.figure1);
+end
+
+
+function result = showchar(chars, i, h, himg)
+result = CharRecogn (chars{i});
+%----------------------Optional, disable for speed --------------------
+set(himg, 'CData', imresize(chars{i}, [150 NaN(1) ]).*255)
+set(h,'String',char(result(1,1)));
+%----------------------------------------------------------------------
+
 
 
 

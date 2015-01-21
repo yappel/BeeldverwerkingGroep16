@@ -25,7 +25,8 @@ bwinv = imclearborder(bwinv);
 %Label all the differnt objects
 cc = bwconncomp(bwinv);
 %Create an image for every labeled object
-prop = regionprops(cc, 'All');
+prop = regionprops(cc, 'Image');
+prop2 = regionprops(cc, 'BoundingBox');
 
 
 if cc.NumObjects > 5
@@ -70,7 +71,7 @@ topleft = zeros(6,1);
 %Get the 6 images of the characters and put them into the list
 for i = 1:6
     charlist{i} = prop(sortedIndexesSorted(i)).Image;
-    boundingbox = prop(sortedIndexesSorted(i)).BoundingBox;
+    boundingbox = prop2(sortedIndexesSorted(i)).BoundingBox;
     topright(i) = boundingbox(1)+boundingbox(3);
     topleft(i) = boundingbox(1);
 end
