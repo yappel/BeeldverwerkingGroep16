@@ -143,7 +143,7 @@ function buttonplay_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% profile on
+ profile on
 
 
 %------------INIT AXES-------------
@@ -169,7 +169,7 @@ starttime = cputime;
 newscene = 1;
 means = zeros(3,2);
 savedPlates = [''];
-platecounter = [];
+platecounter = zeros(10,1);
 
 
 while(hasFrame(handles.vid))
@@ -213,29 +213,30 @@ set(h2,'CData', boxed);
             %             if strcmp(oldData(1),plate) + strcmp(plate,'') == 0
             if strcmp(oldData(1),plate) + strcmp(oldData(2),plate)+ strcmp(plate,'') == 0
                 
-%                 if newscene
-%                     [~, index] = max(platecounter);
-%                     index
-%                     savedPlates(index)
-%                     newData = [{savedPlates(index) framecounter cputime-starttime}; oldData];
-%                     set(handles.uitable1,'Data',newData)
-%                 else
-%                         ind = 0;
-%                         if isempty(savedPlates) > 0
-%                             for l = 1:length(savedPlates)
-%                                 if strcmp(savedPlates(l), plate)
-%                                     ind = l;
-%                                 end
-%                             end
-%                         end
-%                         if ind ~= 0
-%                             platecounter(ind) = platecounter(ind) +1
-%                         else
-%                             savedPlates=[savedPlates;plate];
-%                         end
-%                 end
-                                newData = [{plate framecounter cputime-starttime}; oldData];
-                                set(handles.uitable1,'Data',newData)
+                if newscene
+                    [~, index] = max(platecounter);
+                    newData = [{savedPlates(index,:) framecounter cputime-starttime}; oldData];
+                    set(handles.uitable1,'Data',newData)
+                    savedPlates = [];
+                    platecounter = zeros(10,1);
+                else
+                        ind = 0;
+                        if ~isempty(savedPlates(:))
+                            [m,~] = size(savedPlates);
+                            for k = 1:m
+                                if strcmp(savedPlates(k,:), plate)
+                                    ind = k;
+                                end
+                            end
+                        end
+                        if ind ~= 0
+                            platecounter(ind) = platecounter(ind) +1;
+                        else
+                            savedPlates=[savedPlates;plate];
+                        end
+                end
+%                                 newData = [{plate framecounter cputime-starttime}; oldData];
+%                                 set(handles.uitable1,'Data',newData)
             end
         else
             newData = [oldData; {plate framecounter cputime-starttime}];
@@ -254,9 +255,9 @@ end
 sampleData = get(handles.uitable1,'Data');
 checkSolution(sampleData, 'trainingSolutions.mat');
 
-% profile viewer
-% p = profile('info');
-% profsave(p, 'profile_results')
+profile viewer
+p = profile('info');
+profsave(p, 'profile_results')
 
 
 

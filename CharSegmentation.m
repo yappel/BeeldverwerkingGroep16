@@ -13,7 +13,7 @@ charlist = cell(1,6);
 
 
 %Convert the image to a grey-value image
-grayImg = rgb2gray(imsharpen(imsharpen(inputImage)));
+grayImg = rgb2gray(imsharpen(inputImage));
 %Apply treshholding
 bw = im2bw(grayImg, graythresh(grayImg));
 
