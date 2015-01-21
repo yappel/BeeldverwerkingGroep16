@@ -1,0 +1,7 @@
+Kararkter herkenning
+Bij deze stap moesten we bepalen welk karakter een plaatje represenateerde. Hiervoor hebben we gebruikt gemaakt van patroon herkenning.
+We hebben het plaatje opgedeeld in een aantal delen en vervolgens voor elk deel gekeken hoeveel deze afweek van onze opgeslagen voorbeelden.
+Het aantal delen hebben we zo gekozen dat ze klein genoeg waren om zodat we vormen konden herkennen, maar groot genoeg om het effect van ruis te minimaliseren.
+Een van de weinige karakters waar ons programma moeite mee had om het goed te herkennen waren R en H. Om deze reden hebben we een speciale controle toegevoegd
+wanneer 1 van deze karakters werd herkend. Deze controle let vooral op de gebieden midden-boven en rechts-midden, omdat dit de gebieden zijn waarin de meeste veschillen
+zitten bij deze 2 karakters. Deze stap haalde ook vaak karakters zoals D en 0 door elkaar, maar doordat we de volgende stap hebben toegevoegd maakte dit niet uit.
