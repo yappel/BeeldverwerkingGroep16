@@ -85,7 +85,6 @@ vid = VideoReader(name);
 frame = readFrame(vid);
 axes(handles.framevideo);
 image(frame)
-% data2 = thresholdFilter(frame);
 
 axes(handles.frametresholded);
 image(frame)
@@ -175,7 +174,6 @@ platecounter = [];
 
 while(hasFrame(handles.vid))
 data = readFrame(handles.vid);
-% data2 = thresholdFilter(data);
 h = get(handles.framevideo,'Children');
 set(h,'CData', data);
 
@@ -186,7 +184,7 @@ set(h2,'CData', boxed);
 % set(handles.text2, 'String', round(handles.vid.CurrentTime, 2)); 
 
 
- means(1,1) = means(1,2);
+    means(1,1) = means(1,2);
     means(2,1) = means(2,2);
     means(3,1) = means(3,2);
     means(1,2) = mean(mean(data(:,:,1)));
